@@ -25,28 +25,42 @@ public class SortBlocksServiceImpl implements SortBlocksService {
         var original = new ArrayList<String>(Arrays.asList(input));
         var sorted = new ArrayList<String>();
 
-        var i = 0;
+        var index = 0;
+        var serverCallNumber = 0;
 
-        sorted.add((original.get(i)));
-        original.remove(i);
+        sorted.add((original.get(index)));
+        original.remove(index);
 
-        while (!original.isEmpty() && i < original.size()) {
-            System.out.println("Comparando: " + sorted.get(sorted.size() - 1).substring(0, 7) + "... contra: " + original.get(i).substring(0, 7) + "...");
+        while (!original.isEmpty() && index < original.size()) {
 
-            var data = new String[]{sorted.get(sorted.size() - 1), original.get(i)};
-
-            var result = repository.sequentialCheck(token, data);
-
-            if (result == true) {
-                sorted.add(original.get(i));
-                original.remove(i);
-                i = 0;
+            /// Si en la lista original solo queda un bloque,
+            /// no es necesario realizar la comparación con una llamada al endpoint.
+            /// Es el último elemento.
+            if (original.size() == 1) {
+                sorted.add(original.get(index));
+                original.remove(index);
+                index = 0;
             } else {
-                i++;
+                serverCallNumber++;
+                System.out.println(String.format("%02d", serverCallNumber) + ": Comparando: " + sorted.get(sorted.size() - 1).substring(0, 7) + "... contra: " + original.get(index).substring(0, 7) + "...");
+
+                var data = new String[]{sorted.get(sorted.size() - 1), original.get(index)};
+
+                var result = repository.sequentialCheck(token, data);
+
+                if (result == true) {
+                    sorted.add(original.get(index));
+                    original.remove(index);
+                    index = 0;
+                } else {
+                    index++;
+                }
             }
         }
 
         var result = repository.finalCheck(token, String.join("", sorted));
+        System.out.println();
+        System.out.println("Final Check: Están los bloques ordenados? " + result);
 
         if (!result) {
             throw new SortBlocksException("No se logró ordenar los bloques");
