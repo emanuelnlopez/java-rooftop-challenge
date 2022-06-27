@@ -1,6 +1,6 @@
 plugins {
     id "application"
-    id 'java'
+    id "java"
 }
 
 apply plugin : "java"
@@ -29,6 +29,7 @@ dependencies {
 }
 
 test {
+    outputs.upToDateWhen {false}
     afterSuite { desc, result ->
         if (!desc.parent)
             println("${result.resultType} " +
