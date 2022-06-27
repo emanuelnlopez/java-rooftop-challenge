@@ -1,6 +1,6 @@
 # Rooftop Career Switch Technical Challenge
 
-Projecto realizado como technical challenge para aplicar a una beca de estudio en Rooftop.
+Proyecto realizado como technical challenge para aplicar a una beca de estudio en Rooftop.
 
 ## About the project
 
